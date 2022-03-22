@@ -131,7 +131,7 @@ class ToDescrip:
         descrip.toList()
         
         for x in descrip.outputlist:
-            file.write(x)
+            file.write(x + '\n')
         file.close()
         
         namefile = open("MonsterList.txt", "w")
@@ -160,7 +160,7 @@ class ToDescrip:
         
         file.close()
         
-        name.strip("\n")
+     
         
         newDescrip = Description(name, True, monstertype, descriptxt)
         self.writeToFile(newDescrip)
