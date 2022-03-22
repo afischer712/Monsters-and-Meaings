@@ -33,6 +33,7 @@ class Description:
         self.monstertype = monstertype
         self.descriptxt = descriptxt
         self.PartsOfSpeech()
+        self.outputlist = []
         
         
     #automatically generates the lists for parts of speech, called by constructor
@@ -66,6 +67,33 @@ class Description:
         outputString+="\n" + self.descriptxt
         
         return outputString
+    
+    def toList(self):
+        outputlist = []
+        
+        outputlist.append(self.Name)
+        outputlist.append(self.monstertype)
+        
+        nounstring = ''
+        verbstring = ''
+        adjstring = ''
+        
+        for x in self.nounList:
+            nounstring += " " + x
+        for x in self.verbList:
+            verbstring += " " + x
+        for x in self.adjList:
+            adjstring += " " + x
+        
+        outputlist.append(nounstring)
+        outputlist.append(verbstring)
+        outputlist.append(adjstring)
+        
+        outputlist.append(self.descriptxt)
+        
+        self.outputlist = outputlist
+        
+        return outputlist
 
 
 
@@ -76,6 +104,8 @@ class SimScorer:
     def __init__(self, desc1, desc2):
         self.desc1 = desc1
         self.desc2 = desc2
+        
+        
     
     #this function will actually provide the similarity score btwn two descriptions
     def Score(desc1, desc2):
@@ -89,76 +119,52 @@ class SimScorer:
     
 class ToDescrip:
     
-    #constructor
-    def __init__(self, filename):
-        self.filename = filename
+    # makes a .txt file in the proper format for storing and using descriptions
+    # also adds the monster to the monsterlist to be recalled
+    def writeToFile(self, descrip):
+        
+        namename = descrip.Name.strip()
+        filename = namename + '.txt'
+        
+        file = open(filename, "w")
+        
+        descrip.toList()
+        
+        for x in descrip.outputlist:
+            file.write(x)
+        file.close()
+        
+        namefile = open("MonsterList.txt", "w")
+        namefile.write(descrip.Name)  
       
     # This method is for turning strings into a Description and writing it to a txt file
     def StringDescrip(self, name, monstertype, descriptxt):
-        stringdescrip = Description(name, True, monstertype, descriptxt)
         
-        # NEEDS TO WRITE NEW FILE TOO AND ADD TO MONSTERLIST
+        stringdescrip = Description(name, True, monstertype, descriptxt)
+        self.writeToFile(stringdescrip)
+        
+        print(stringdescrip.tostring())
+        
+        
         
     #creates description object from contents of file
-    def TxtDescrip(self):
+    def TxtDescrip(self, filename):
         
         
-        file = open(self.filename, 'r')
+        file = open(filename, 'r')
         
         name = file.readline()
         monstertype = file.readline()
-        
-"""        # loops for the lists
-            nouns = []
-            verbs = []
-            adjs = []
-        
-            nounstring = file.readline()
-            s = ""
-            for x in nounstring: 
-                if x != ' ':
-                    s+=x
-                else:
-                    nouns.append(s)
-                    s = ""
-                nouns.append(s)
-                
-            verbstring = file.readline()
-            s = ""
-            for x in verbstring:
-                if x != ' ':
-                    s+=x
-                else:
-                    verbs.append(s)
-                    s = ""
-            verbs.append(s)
-                
-            adjstring = file.readline()
-            s = ""
-            for x in adjstring:
-                if x != ' ':
-                    s+=x
-                else:
-                    adjs.append(s)
-                    s = ""
-            adjs.append(s)
+        descriptxt = file.readline()
         
         
-            description = file.readline()
-            
-            descrip = Description(nouns, verbs, adjs, name, True, monstertype, description)
+        file.close()
         
-            return descrip.tostring()
+        name.strip("\n")
         
-        elif inputtype == "string":
-            
-            x = 1# what did i even want this method to do
-        
-"""
-
-
-
-
+        newDescrip = Description(name, True, monstertype, descriptxt)
+        self.writeToFile(newDescrip)
+        print(newDescrip.tostring())
 
 
 
@@ -185,6 +191,8 @@ if(switchstate == 'A'):
         print(x)
         
     print('daf')
+    
+    namefile.close()
     
 elif(switchstate == 'B'):
     
@@ -217,22 +225,14 @@ elif(switchstate == 'B'):
         userDescrip = input()
        
         
-       
-                
-        descrip = Description(monstername, ismonster,monstertype, userDescrip)
-        
         print('-------------------------------------------------------------')
-        print(descrip.tostring())
+        descripMaker = ToDescrip()
+        descripMaker.StringDescrip(monstername, monstertype, userDescrip)
         print('-------------------------------------------------------------')
         
         
         
-        filename = descrip.Name + '.txt'
-        file1 = open(filename, 'w')
-        file1.write(descrip.tostring())
         
-        file2 = open("MonsterList.txt", "a")
-        file2.write(descrip.Name + "\n")
         # add monster name into a txt file that I can go through to get other descriptions
         
         
@@ -261,9 +261,9 @@ elif(switchstate == 'B'):
         
         print('\n-------------------------------------------------------------')
         
-        MakeADescrip = ToDescrip(txtfilename)
-        MakeADescrip.TxtDescrip()
-        print(MakeADescrip.toDescrip())
+        MakeADescrip = ToDescrip()
+        MakeADescrip.TxtDescrip(txtfilename)
+        
         
         
         # there's a difference between adding a new txt file to the thing and accessing it
