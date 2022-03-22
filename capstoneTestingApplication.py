@@ -1,14 +1,14 @@
-# -*- coding: utf-8 -*-
 """
 Created on Tue Feb 15 12:22:20 2022
 
 @author: Adam Fischer
 
 Monsters & Meanings, a Semantic Analysis Companion to TTRPGs
-    
+   
+Spring 2022
+CS 451 - Capstone Project 
+
 """
-# to save stuff, put name in a txt file and then call txt files made with those names
-# need to iterate through txt file while bringing each object into existence??? i guess??
 
 
 import spacy # semantic analysius
@@ -24,27 +24,45 @@ import os # helpful for a lot, like deleting a file
 class Description:
     
     # constructor
-    def __init__(self, nounList, verbList, adjList, Name, monster, monstertype, descriptxt):
-        self.nounList = nounList
-        self.verbList = verbList
-        self.adjList = adjList
+    def __init__(self, Name, monster, monstertype, descriptxt):
+        self.nounList = []
+        self.verbList = []
+        self.adjList = []
         self.Name = Name
         self.monster = monster
         self.monstertype = monstertype
         self.descriptxt = descriptxt
+        self.PartsOfSpeech()
+        
+        
+    #automatically generates the lists for parts of speech, called by constructor
+    def PartsOfSpeech(self):
+        
+        nlp = spacy.load("en_core_web_sm")
+        doc = nlp(self.descriptxt)
+
+        for t in doc:# sorts words into lists by part of speech
+            
+            if(t.pos_ == 'NOUN'):
+                self.nounList.append(t.lemma_)
+            elif(t.pos_ == 'VERB'):
+                self.verbList.append(t.lemma_)
+            elif(t.pos_ == ("ADJ" or "ADV") ):
+                self.adjList.append(t.lemma_)
+        
         
     # to string mostly to test stuff
     def tostring(self):
-        outputString = self.Name + "\n" + "filler" + "\n"
+        outputString = self.Name + "\n" + self.monstertype + "\n"
         
         for x in self.nounList:
-            outputString += x
+            outputString += x + " "
         outputString+="\n"
         for x in self.verbList:
-            outputString+=x
+            outputString += x + " "
         outputString+="\n"
         for x in self.adjList:
-            outputString+=x
+            outputString +=x + " "
         outputString+="\n" + self.descriptxt
         
         return outputString
@@ -67,30 +85,76 @@ class SimScorer:
         print(desc1.name + " has a similarity score of " + score + " with " + desc2.name)
         return score
     
-class TxtSave:
+    
+    
+class ToDescrip:
     
     #constructor
     def __init__(self, filename):
         self.filename = filename
+      
+    # This method is for turning strings into a Description and writing it to a txt file
+    def StringDescrip(self, name, monstertype, descriptxt):
+        stringdescrip = Description(name, True, monstertype, descriptxt)
+        
+        # NEEDS TO WRITE NEW FILE TOO AND ADD TO MONSTERLIST
         
     #creates description object from contents of file
-    def toDescrip(self):
+    def TxtDescrip(self):
+        
+        
         file = open(self.filename, 'r')
         
-        name = file.readLine()
-        monstertype = file.readLine()
+        name = file.readline()
+        monstertype = file.readline()
         
-        # loops for the lists
-        nouns = []
-        verbs = []
-        adjs = []
+"""        # loops for the lists
+            nouns = []
+            verbs = []
+            adjs = []
         
-        description = file.readLine()
+            nounstring = file.readline()
+            s = ""
+            for x in nounstring: 
+                if x != ' ':
+                    s+=x
+                else:
+                    nouns.append(s)
+                    s = ""
+                nouns.append(s)
+                
+            verbstring = file.readline()
+            s = ""
+            for x in verbstring:
+                if x != ' ':
+                    s+=x
+                else:
+                    verbs.append(s)
+                    s = ""
+            verbs.append(s)
+                
+            adjstring = file.readline()
+            s = ""
+            for x in adjstring:
+                if x != ' ':
+                    s+=x
+                else:
+                    adjs.append(s)
+                    s = ""
+            adjs.append(s)
         
-        descrip = Description(nouns, verbs, adjs, name, True, monstertype, description)
         
-        return descrip.tostring()
+            description = file.readline()
+            
+            descrip = Description(nouns, verbs, adjs, name, True, monstertype, description)
         
+            return descrip.tostring()
+        
+        elif inputtype == "string":
+            
+            x = 1# what did i even want this method to do
+        
+"""
 
 
 
@@ -98,14 +162,13 @@ class TxtSave:
 
 
 
-nlp = spacy.load("en_core_web_sm")
 
 # THIS IS WHERE STUFF BEGINS
 print('WELCOME TO MONSTERS & MEANINGS, YOUR TTRPG CREATION COMPANION')
 print('-------------------------------------------------------------')
 print('A - Test our Monster Collection for description similarity!')
 print('B - Add a Monster Description to our collection!')
-print('B+ - View all Monster Descriptions!')
+print('B+ - View all Monster Descriptions!')# really need to reorder and simplify
 print('C - Information on how Monsters & Meanings works!')
 print('D - Search a piece of literature for a monster description!')
 print('-------------------------------------------------------------')
@@ -115,9 +178,12 @@ switchstate = userchoice.capitalize()
 
 if(switchstate == 'A'):
     
-   # obfile = open('Sphinx', 'rb')     
-    #descrip2 = pickle.load(obfile)
-    #descrip2.tostring()
+    namefile = open("MonsterList.txt", 'r')
+    names = [] = namefile.readlines()
+    
+    for x in names:
+        print(x)
+        
     print('daf')
     
 elif(switchstate == 'B'):
@@ -137,6 +203,7 @@ elif(switchstate == 'B'):
         
         # NOTE: THIS WOULD ALSO REQUIRE A FULL INPUT OF DND STUFF
         #        im just using this to test for now
+        #       no longer just using to test, It's fine w/ monster type alone
         print('Enter the name of the monster!')
         monstername = input()
         print('-------------------------------------------------------------')
@@ -146,31 +213,19 @@ elif(switchstate == 'B'):
         ismonster = True
         
         print('Go ahead and enter the description now!')
+        
         userDescrip = input()
        
         
-        doc = nlp(userDescrip)
-        
-        nouns = []
-        verbs = []
-        adjs = []
-
-        
-        for t in doc:# sorts words into lists by part of speech
-    
-            
-            if(t.pos_ == 'NOUN'):
-                nouns.append(t.lemma_)
-            elif(t.pos_ == 'VERB'):
-                verbs.append(t.lemma_)
-            elif(t.pos_ == ("ADJ" or "ADV") ):
-                adjs.append(t.lemma_)
+       
                 
-        descrip = Description(nouns, verbs, adjs, monstername, ismonster,monstertype, userDescrip)
+        descrip = Description(monstername, ismonster,monstertype, userDescrip)
         
         print('-------------------------------------------------------------')
         print(descrip.tostring())
         print('-------------------------------------------------------------')
+        
+        
         
         filename = descrip.Name + '.txt'
         file1 = open(filename, 'w')
@@ -195,7 +250,10 @@ elif(switchstate == 'B'):
         print('Monster Description\n')
         
         print('-------------------------------------------------------------')
-        print('NOTE: A new .txt file will be created for that monster.')
+        print('   NOTE: A new .txt file will be created for that monster,')
+        print('         under the the name of ____.txt where the blank is')
+        print('         the name of your monster.\n')
+        
         print('Go ahead and enter the name of the file here:')
         print('-------------------------------------------------------------\n')
         
@@ -203,21 +261,26 @@ elif(switchstate == 'B'):
         
         print('\n-------------------------------------------------------------')
         
-        #MakeADescrip = TxtSave(txtfilename)
-        filefile = open(txtfilename, 'r')
+        MakeADescrip = ToDescrip(txtfilename)
+        MakeADescrip.TxtDescrip()
+        print(MakeADescrip.toDescrip())
+        
+        
+        # there's a difference between adding a new txt file to the thing and accessing it
+        # this part of the application is supposed to add
+        # i shouldn't try to use the same method for both and the same with a string
         
        
-        print(filefile.readline())
-        print(filefile.readline())
-        nounsssss = filefile.readline()
-        #while nounsssss.
+        
+        
+                
         
         
         
         
     elif(input2 =="C"):
         #now we use web scraping to grab some monsters. good fucking luck
-        
+        print('you rebel you')
         scrapeurl = 'https://www.dndbeyond.com/monsters?filter-type=0&filter-search=&filter-cr-min=&filter-cr-max=&filter-armor-class-min=&filter-armor-class-max=&filter-average-hp-min=&filter-average-hp-max=&filter-is-legendary=&filter-is-mythic=&filter-has-lair=&filter-source=1'
            
     
@@ -271,7 +334,9 @@ else:# this is just here for fun
     
     
     
-    
+    #i dont need to be claws scuttling across silent seas
+    #i need a nap
+    # z z z z z z z z z z
     
     
     
