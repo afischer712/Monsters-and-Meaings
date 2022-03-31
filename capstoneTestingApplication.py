@@ -24,12 +24,11 @@ import os # helpful for a lot, like deleting a file
 class Description:
     
     # constructor
-    def __init__(self, Name, monster, monstertype, descriptxt):
+    def __init__(self, Name, monstertype, descriptxt):
         self.nounList = []
         self.verbList = []
         self.adjList = []
         self.Name = Name
-        self.monster = monster
         self.monstertype = monstertype
         self.descriptxt = descriptxt
         self.PartsOfSpeech()
@@ -104,16 +103,20 @@ class SimScorer:
     def __init__(self, desc1, desc2):
         self.desc1 = desc1
         self.desc2 = desc2
+        self.score
+        self.Score()
         
+    def TypeCompare(self):
+        print('needs to compare types')
         
-    
     #this function will actually provide the similarity score btwn two descriptions
-    def Score(desc1, desc2):
-        
+    def Score(self):
         # this is where the vector stuff needs to occur with semantic analysis
         score = 0
-        print(desc1.name + " has a similarity score of " + score + " with " + desc2.name)
-        return score
+        
+        self.TypeCompare()
+        print(self.desc1.name + " has a similarity score of " + score + " with " + self.desc2.name)
+        self.score = score
     
     
     
@@ -121,7 +124,7 @@ class ToDescrip:
     
     # makes a .txt file in the proper format for storing and using descriptions
     # also adds the monster to the monsterlist to be recalled
-    def writeToFile(self, descrip):
+    def WriteToFile(self, descrip):
         
         namename = descrip.Name.strip()
         filename = namename + '.txt'
@@ -136,12 +139,64 @@ class ToDescrip:
         
         namefile = open("MonsterList.txt", "a")
         namefile.write(descrip.Name + "\n")  
+    
+    # makes a description object out of the .txt file
+    def FileToDescrip(self, monstername):
+        
+        filename = monstername + '.txt'
+        
+        file = open(filename, 'r')
+        
+        name = file.readline()
+        monstertype = file.readline()
+        
+        nouns = []
+        nounstring = file.readline()
+        noun = ''
+        
+        for x in nounstring:
+            
+            if x == " " and noun != "":
+                nouns.append(noun)
+                noun = ""
+            else:
+                noun += x
+        
+        verbs = []
+        verbstring = file.readline()
+        verb = ''
+        
+        for x in verbstring:
+            
+            if x == " " and verb != "":
+                verbs.append(verb)
+                verb = ""
+            else:
+                verb += x
+        
+        adjs = []
+        adjstring = file.readline()
+        adj = ''
+        
+        for x in adjstring:
+            
+            if x == " " and adj != "":
+                adjs.append(adj)
+                adj = ""
+            else:
+                adj += x
+                
+        descriptxt = file.readline()
+        
+        descrip = Description(name, monstertype, nouns, verbs, adjs, descriptxt)
+        
+        return descrip
       
     # This method is for turning strings into a Description and writing it to a txt file
     def StringDescrip(self, name, monstertype, descriptxt):
         
-        stringdescrip = Description(name, True, monstertype, descriptxt)
-        self.writeToFile(stringdescrip)
+        stringdescrip = Description(name, monstertype, descriptxt)
+        self.WriteToFile(stringdescrip)
         
         print(stringdescrip.tostring())
         
@@ -163,7 +218,7 @@ class ToDescrip:
      
         
         newDescrip = Description(name, True, monstertype, descriptxt)
-        self.writeToFile(newDescrip)
+        self.WriteToFile(newDescrip)
         print(newDescrip.tostring())
 
 
@@ -219,42 +274,82 @@ while loopChar != 'n':
             print('-------------------------------------------------------------')
             mt = input()
             
-        if(mt==1):
-            monstertype = 'Abberation'
-        if(mt==2):
-            monstertype = 'Beast'
-        if(mt==3):
-            monstertype = 'Celestial'
-        if(mt==4):
-            monstertype = 'Construct'
-        if(mt==5):
-            monstertype = 'Dragon'
-        if(mt==6):
-            monstertype = 'Elemental'
-        if(mt==7):
-            monstertype = 'Fey'
-        if(mt==8):
-            monstertype = 'Fiend'
-        if(mt==9):
-            monstertype = 'Giant'
-        if(mt==10):
-            monstertype = 'Humanoid'
-        if(mt==11):
-            monstertype = 'Monstrosity'
-        if(mt==12):
-            monstertype = 'Ooze'
-        if(mt==13):
-            monstertype = 'Plant'
-        if(mt==14):
-            monstertype = 'Undead'
-        
+        valid = False
+        while valid !=True:
+            valid = True
+            
+            if(mt==1):
+                monstertype = 'Abberation'
+            elif(mt==2):
+                monstertype = 'Beast'
+            elif(mt==3):
+                monstertype = 'Celestial'
+            elif(mt==4):
+                monstertype = 'Construct'
+            elif(mt==5):
+                monstertype = 'Dragon'
+            elif(mt==6):
+                monstertype = 'Elemental'
+            elif(mt==7):
+                monstertype = 'Fey'
+            elif(mt==8):
+                monstertype = 'Fiend'
+            elif(mt==9):
+                monstertype = 'Giant'
+            elif(mt==10):
+                monstertype = 'Humanoid'
+            elif(mt==11):
+                monstertype = 'Monstrosity'
+            elif(mt==12):
+                monstertype = 'Ooze'
+            elif(mt==13):
+                monstertype = 'Plant'
+            elif(mt==14):
+                monstertype = 'Undead'
+            else:
+                print("That wasn't an option. Please select a real choice")
+                valid = False
+            
         print('-------------------------------------------------------------')
         print('Enter a description of the monster!')
         descriptxt = input()
         
-        userDescrip = Description(monstername, True, monstertype, descriptxt)
+        userDescrip = Description(monstername, monstertype, descriptxt)
         
         print('-------------------------------------------------------------')
+        print('Would you like a specific similarity score or a ranking with all monsters?')
+        print('A - Pick a Monster')
+        print('B - Compare with all Monsters')
+        
+        choice = input()
+        
+        if choice == 'A':# compare with one monster, faster
+        
+            print('-------------------------------------------------------------')
+            print('Here are the availible monsters:')
+            
+            file = open('MonsterList.txt', 'r')
+            monsternames = file.readlines()
+            
+            for x in monsternames:
+                print(x)
+            
+            print('-------------------------------------------------------------')
+            print('Enter the name of a monster to compare your monster to it!')
+            
+            thismonster = input()
+            
+            newDescrip = ToDescrip()
+            compareMonster = newDescrip.FileToDescrip(thismonster)
+            
+            Scorer = SimScorer()
+            Scorer.Score(userDescrip, compareMonster)
+            
+            
+            
+        elif choice == 'B':# compare with all monsters, will take time
+            print('This might take a while!')
+        
         print('Here are your results!')# add stuff here
         print('-------------------------------------------------------------')
         
@@ -428,7 +523,7 @@ while loopChar != 'n':
           print('filler text, I\'ll do it later')  
         
     else:# this is just here for fun
-        print("THAT WAS NOT AN OPTION\nTHE REAL MONSTER IS YOU")
+        print("That wasn't a choice, please return to the main menu.")
         
     print('-------------------------------------------------------------')
     print("Would you like to return to the main menu? (y/n)")
