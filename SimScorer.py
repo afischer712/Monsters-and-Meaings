@@ -22,15 +22,22 @@ class SimScorer:
         
         if self.desc1.monstertype == self.desc2.monstertype:
             self.score += 20
-            
+           
+    # Does the brunt of comparison work, looks at shared words and synonyms
     def ListScorer(self):
         
-        nlp = spacy.load("en_core_web_sm")
+        nlp = spacy.load("en_core_web_lg")
             
         for x in self.desc1.nounList:
+            
             for y in self.desc2.nounList:  
+               
                 if x == y:
                     self.score+=3
+                
+                doc1 = nlp(x)
+                doc2 = nlp(y)
+                self.score += doc1.similarity(doc2)
         
         for x in self.desc1.verbList: 
             for y in self.desc2.verbList:  
@@ -50,6 +57,6 @@ class SimScorer:
         
         self.TypeCompare()
         self.ListScorer()
-        print(self.desc1.name + " has a similarity score of " + self.score + " with " + self.desc2.name)
+        print(self.desc1.Name + " has a similarity score of " + str(self.score) + " with " + self.desc2.Name)
         
         return self.score

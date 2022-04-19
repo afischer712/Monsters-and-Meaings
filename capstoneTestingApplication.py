@@ -73,13 +73,13 @@ while loopChar != 'n':
             print("13 - Plant - Plants in this context are vegetable creatures,\nnot ordinary flora. Most of them are ambulatory, and some are\ncarnivorous. The quintessential plants are the shambling mound\nand the treant. Fungal creatures such as the gas spore and the\nmyconid also fall into this category\n")
             print("14 - Undead - Undead are once-living creatures brought to a\nhorrifying state of undeath through the practice of necromantic\nmagic or some unholy curse. Undead include walking corpses,\nsuch as vampires and zombies, as well as bodiless spirits, such\nas ghosts and specters\n")
             print('-------------------------------------------------------------')
-            mt = input()
+          
             
         valid = False
         while valid !=True:
             valid = True
             
-            mt = input().isdigit()
+            mt = mt.isdigit()
             
             if(mt==1):
                 monstertype = 'Abberation'
@@ -117,7 +117,7 @@ while loopChar != 'n':
         print('Enter a description of the monster!')
         descriptxt = input()
         
-        userDescrip = Description(monstername, monstertype, descriptxt, True)
+        userDescrip = Description(monstername, monstertype, descriptxt, False)
         
         print('-------------------------------------------------------------')
         print('Would you like a specific similarity score or a ranking with all monsters?')
@@ -131,7 +131,7 @@ while loopChar != 'n':
             print('-------------------------------------------------------------')
             print('Here are the availible monsters:')
             
-            file = open('MonsterList.txt', 'r')
+            file = open('MonsterList.txt', 'r')# try catch?
             monsternames = file.readlines()
             
             for x in monsternames:
@@ -145,16 +145,21 @@ while loopChar != 'n':
             newDescrip = ToDescrip()
             compareMonster = newDescrip.FileToDescrip(thismonster)
             
-            Scorer = SimScorer()
-            Scorer.Score(userDescrip, compareMonster)
+            print('Here are your results!')# add stuff here
+            print('-------------------------------------------------------------')
+            Scorer = SimScorer(userDescrip, compareMonster)
+           
             
             
             
         elif choice == 'B':# compare with all monsters, will take time
-            print('This might take a while!')
         
-        print('Here are your results!')# add stuff here
-        print('-------------------------------------------------------------')
+            print('This might take a while!')
+            
+            print('Here are your results!')# add stuff here
+            print('-------------------------------------------------------------')
+        
+        
         
         print('-------------------------------------------------------------')
         print('Would you like to add this monster to our collection? (y/n)')
@@ -163,7 +168,7 @@ while loopChar != 'n':
         if decision == 'y':
             print('Great! Your monster has been added!')
             fileMaker = ToDescrip()
-            fileMaker.writeToFile(userDescrip)
+            fileMaker.WriteToFile(userDescrip)
         elif decision == 'n':
             print('That\'s alright!')
         
