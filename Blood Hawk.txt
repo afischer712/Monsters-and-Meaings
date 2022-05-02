@@ -1,0 +1,6 @@
+Blood Hawk
+Beast
+ hawk advantage check sight hawk advantage attack roll creature hawk ally foot creature ally beak +4 ft . target 1d4 damage name feather nature blood hawk animal beak blood hawk number pack prey
+ have rely have incapacitate hit reach hit pierce take attack stab flock attack take
+ least crimson aggressive daggerlike large
+Small Beast, Unaligned Keen Sight. The hawk has advantage on Wisdom (Perception) checks that rely on sight. Pack Tactics. The hawk has advantage on an attack roll against a creature if at least one of the hawk's allies is within 5 feet of the creature and the ally isn't incapacitated. Beak. Melee Weapon Attack: +4 to hit, reach 5 ft., one target. Hit: 4 (1d4 + 2) piercing damage. Taking its name from its crimson feathers and aggressive nature, the blood hawk fearlessly attacks almost any animal, stabbing it with its daggerlike beak. Blood hawks flock together in large numbers, attacking as a pack to take down prey.

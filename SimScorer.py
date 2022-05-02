@@ -15,13 +15,15 @@ class SimScorer:
         self.desc1 = desc1
         self.desc2 = desc2
         self.score = 0
+        self.name = desc2.Name
         self.Score()
+        
         
     # just compares types, might delete
     def TypeCompare(self):
         
-        if self.desc1.monstertype == self.desc2.monstertype:
-            self.score += 20
+        if self.desc1.monstertype.strip() == self.desc2.monstertype.strip():
+            self.score += 50
            
     # Does the brunt of comparison work, looks at shared words and synonyms
     def ListScorer(self):
@@ -33,7 +35,7 @@ class SimScorer:
             for y in self.desc2.nounList:  
                
                 if x == y:
-                    self.score+=3
+                    self.score+=5
                 
                 doc1 = nlp(x)
                 doc2 = nlp(y)
@@ -42,12 +44,20 @@ class SimScorer:
         for x in self.desc1.verbList: 
             for y in self.desc2.verbList:  
                 if x == y:
-                    self.score+=2
+                    self.score+=5
+                    
+                doc1 = nlp(x)
+                doc2 = nlp(y)
+                self.score += doc1.similarity(doc2)
                     
         for x in self.desc1.adjList: 
             for y in self.desc2.adjList:   
                 if x == y:
-                    self.score+=4
+                    self.score+=10
+                    
+                doc1 = nlp(x)
+                doc2 = nlp(y)
+                self.score += doc1.similarity(doc2)
             
         
     #this function will actually provide the similarity score btwn two descriptions

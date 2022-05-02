@@ -83,7 +83,7 @@ class ToDescrip:
     # This method is for turning strings into a Description and writing it to a txt file
     def StringDescrip(self, name, monstertype, descriptxt):
         
-        stringdescrip = Description(name, monstertype, descriptxt, True)
+        stringdescrip = Description(name, monstertype, descriptxt, False)
         self.WriteToFile(stringdescrip)
         
         print(stringdescrip.tostring())
@@ -105,6 +105,6 @@ class ToDescrip:
         
      
         
-        newDescrip = Description(name, monstertype, descriptxt, True)
+        newDescrip = Description(name, monstertype, descriptxt, False)
         self.WriteToFile(newDescrip)
         print(newDescrip.tostring())

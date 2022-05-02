@@ -12,13 +12,8 @@ CS 451 - Capstone Project
 
 
 
-import spacy # semantic analysius
-import selenium # web scraping
-from time import sleep # helps w/ web scraping
-import pickle# serialization
-import pandas as pd # used with spacy
-import os # helpful for a lot, like deleting a file
 
+from selenium import webdriver # web scraping
 from Description import Description # Description object
 from SimScorer import SimScorer # used for the Similarity score
 from ToDescrip import ToDescrip # txt / string / file / description transfer
@@ -77,41 +72,42 @@ while loopChar != 'n':
             
         valid = False
         while valid !=True:
-            valid = True
-            
-            mt = mt.isdigit()
-            
-            if(mt==1):
-                monstertype = 'Abberation'
-            elif(mt==2):
-                monstertype = 'Beast'
-            elif(mt==3):
-                monstertype = 'Celestial'
-            elif(mt==4):
-                monstertype = 'Construct'
-            elif(mt==5):
-                monstertype = 'Dragon'
-            elif(mt==6):
-                monstertype = 'Elemental'
-            elif(mt==7):
-                monstertype = 'Fey'
-            elif(mt==8):
-                monstertype = 'Fiend'
-            elif(mt==9):
-                monstertype = 'Giant'
-            elif(mt==10):
-                monstertype = 'Humanoid'
-            elif(mt==11):
-                monstertype = 'Monstrosity'
-            elif(mt==12):
-                monstertype = 'Ooze'
-            elif(mt==13):
-                monstertype = 'Plant'
-            elif(mt==14):
-                monstertype = 'Undead'
-            else:
-                print("That wasn't an option. Please select a real choice")
-                valid = False
+             valid = True
+             
+             if mt == "TYPE":
+                 mt = input()
+             
+             if(mt=='1'):
+                 monstertype = 'Abberation'
+             elif(mt=='2'):
+                 monstertype = 'Beast'
+             elif(mt=='3'):
+                 monstertype = 'Celestial'
+             elif(mt=='4'):
+                 monstertype = 'Construct'
+             elif(mt=='5'):
+                 monstertype = 'Dragon'
+             elif(mt=='6'):
+                 monstertype = 'Elemental'
+             elif(mt=='7'):
+                 monstertype = 'Fey'
+             elif(mt=='8'):
+                 monstertype = 'Fiend'
+             elif(mt=='9'):
+                 monstertype = 'Giant'
+             elif(mt=='10'):
+                 monstertype = 'Humanoid'
+             elif(mt=='11'):
+                 monstertype = 'Monstrosity'
+             elif(mt=='12'):
+                 monstertype = 'Ooze'
+             elif(mt=='13'):
+                 monstertype = 'Plant'
+             elif(mt=='14'):
+                 monstertype = 'Undead'
+             else:
+                 print("That wasn't an option. Please select a real choice")
+                 valid = False
             
         print('-------------------------------------------------------------')
         print('Enter a description of the monster!')
@@ -156,12 +152,28 @@ while loopChar != 'n':
         
             print('This might take a while!')
             
+            file = open('MonsterList.txt', 'r')
+            monsternames = file.readlines()
+            
             print('Here are your results!')# add stuff here
             print('-------------------------------------------------------------')
-        
-        
-        
-        print('-------------------------------------------------------------')
+            
+            Monsters = []
+            
+            for x in monsternames:
+                
+                newDescrip = ToDescrip()
+                compareMonster = newDescrip.FileToDescrip(x.strip('\n'))
+                Scorer = SimScorer(userDescrip, compareMonster)
+                Monsters.append(Scorer)
+                
+            Monsters.sort(key=lambda x: x.score, reverse=True)
+            for x in Monsters:
+                printstring = x.name + " " + str(x.score)
+                print(printstring)
+            
+                   
+        print('\n-------------------------------------------------------------')
         print('Would you like to add this monster to our collection? (y/n)')
         
         decision = input()
@@ -189,9 +201,7 @@ while loopChar != 'n':
             
             
             
-            # NOTE: THIS WOULD ALSO REQUIRE A FULL INPUT OF DND STUFF
-            #        im just using this to test for now
-            #       no longer just using to test, It's fine w/ monster type alone
+           
             print('Enter the name of the monster!')
             monstername = input()
             print('-------------------------------------------------------------')
@@ -220,53 +230,56 @@ while loopChar != 'n':
                 print("13 - Plant - Plants in this context are vegetable creatures,\nnot ordinary flora. Most of them are ambulatory, and some are\ncarnivorous. The quintessential plants are the shambling mound\nand the treant. Fungal creatures such as the gas spore and the\nmyconid also fall into this category\n")
                 print("14 - Undead - Undead are once-living creatures brought to a\nhorrifying state of undeath through the practice of necromantic\nmagic or some unholy curse. Undead include walking corpses,\nsuch as vampires and zombies, as well as bodiless spirits, such\nas ghosts and specters\n")
                 print('-------------------------------------------------------------')
-                mt = input()
+               
                 
             valid = False
             while valid !=True:
                 valid = True
                 
-                if(mt==1):
+                if mt == "TYPE":
+                    mt = input()
+                
+                if(mt=='1'):
                     monstertype = 'Abberation'
-                elif(mt==2):
+                elif(mt=='2'):
                     monstertype = 'Beast'
-                elif(mt==3):
+                elif(mt=='3'):
                     monstertype = 'Celestial'
-                elif(mt==4):
+                elif(mt=='4'):
                     monstertype = 'Construct'
-                elif(mt==5):
+                elif(mt=='5'):
                     monstertype = 'Dragon'
-                elif(mt==6):
+                elif(mt=='6'):
                     monstertype = 'Elemental'
-                elif(mt==7):
+                elif(mt=='7'):
                     monstertype = 'Fey'
-                elif(mt==8):
+                elif(mt=='8'):
                     monstertype = 'Fiend'
-                elif(mt==9):
+                elif(mt=='9'):
                     monstertype = 'Giant'
-                elif(mt==10):
+                elif(mt=='10'):
                     monstertype = 'Humanoid'
-                elif(mt==11):
+                elif(mt=='11'):
                     monstertype = 'Monstrosity'
-                elif(mt==12):
+                elif(mt=='12'):
                     monstertype = 'Ooze'
-                elif(mt==13):
+                elif(mt=='13'):
                     monstertype = 'Plant'
-                elif(mt==14):
+                elif(mt=='14'):
                     monstertype = 'Undead'
                 else:
                     print("That wasn't an option. Please select a real choice")
                     valid = False
             
             print('-------------------------------------------------------------')
-            ismonster = True
+            
             
             print('Go ahead and enter the description now!')
             
             userDescrip = input()
            
             
-            print('-------------------------------------------------------------')
+           
             descripMaker = ToDescrip()
             descripMaker.StringDescrip(monstername, monstertype, userDescrip)
             print('-------------------------------------------------------------')
@@ -362,14 +375,23 @@ while loopChar != 'n':
             
             gutenstring = '?search='+s
             
-            print(gutenstring)
+            
             
         elif(choice =='B'):# this will just list all of the availible options for monster lit
             gutenstring = '?topic=monster'
         else:
             print("That wasn't an option, pal")
-            
-        # do the web scraping here with gutenstring
+      
+            # needs to be a specific version
+        path =  "C:\\Users\\adfis\\Downloads\\chromedriver_win32 (1)\\chromedriver.exe"
+        driver = webdriver.Chrome(path)
+        driver.get('https://gutendex.com/')
+
+        id_box = driver.find_element_by_id('ax-url')
+        id_box.send_keys(gutenstring)
+
+        search_click = driver.find_element_by_class_name('btn-primary')
+        search_click.click()
     
     elif(switchstate == 'E'):# info about how M&M works
           
